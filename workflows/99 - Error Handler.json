@@ -1,0 +1,84 @@
+{
+  "name": "99 - Error Handler",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "4b9b69b3-7cf0-4d93-9d8a-96d60d95a7dc",
+      "name": "Error Trigger"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "08688f11-cfc9-45f7-8ac0-e6ed28903cfe",
+              "name": "workflow_name",
+              "value": "={{ $json.workflow.name }}",
+              "type": "string"
+            },
+            {
+              "id": "adeaf5df-db4a-4ad5-812d-b75c42ea864b",
+              "name": "error_message",
+              "value": "={{ $json.execution.error.message }}",
+              "type": "string"
+            },
+            {
+              "id": "35bd9727-5062-4c6f-928e-9456aeef9db5",
+              "name": "execution_url",
+              "value": "={{ $json.execution.url }}",
+              "type": "string"
+            },
+            {
+              "id": "3aa88773-18a8-44aa-8f24-4459e30dc693",
+              "name": "time",
+              "value": "={{ $now }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        208,
+        0
+      ],
+      "id": "f6aca198-7b16-429e-a34e-03b88cdca409",
+      "name": "Edit Fields"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "7e1562b7-ab52-4b92-a4e5-2c28f28bdb99",
+  "meta": {
+    "instanceId": "9836c68541cd69e2fc9de7f6f3d6a347709b88cb77048e0165e8e7966373ed75"
+  },
+  "nodeGroups": [],
+  "id": "91yGXoYutFfSwy18",
+  "tags": []
+}

@@ -1,0 +1,187 @@
+{
+  "name": "02 - Employee KB Chatbot Test",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "2de47831-00a1-4a72-a756-30f2da4a0116",
+      "name": "When chat message received",
+      "webhookId": "38f727b4-5f10-488f-abae-aae6b50c6fdc"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "You are an internal employee knowledge base assistant.\n\nUse the Qdrant knowledge base tool to answer employee questions.\n\nAnswer only using information found in the retrieved company documents.\n\nIf the answer is not found in the knowledge base, say:\n\"I could not find that in the employee knowledge base.\"\n\nDo not invent company policies, benefits, timelines, or procedures.\n\nWhen helpful, mention the source document name."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "ebbd6333-7cd9-4712-af14-5d09802cf260",
+      "name": "AI Agent",
+      "retryOnFail": false,
+      "notesInFlow": false
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash",
+        "options": {
+          "temperature": 0.2
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        32,
+        224
+      ],
+      "id": "ccbb8cbd-6373-4a37-855a-bc5338610598",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "eTa5CJ5mikRsAAb2",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "Searches the employee knowledge base documents for relevant company policy, benefits, IT, and handbook information.",
+        "qdrantCollection": {
+          "__rl": true,
+          "value": "company_files",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
+      "typeVersion": 1.3,
+      "position": [
+        560,
+        240
+      ],
+      "id": "5ce25899-f7bb-434e-95b7-2c4eede76ea7",
+      "name": "Qdrant Vector Store",
+      "credentials": {
+        "qdrantApi": {
+          "id": "srS61JVnlfmTdCon",
+          "name": "Qdrant account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        512,
+        368
+      ],
+      "id": "cb3878b5-05f4-4340-8403-139134624ffb",
+      "name": "Embeddings Google Gemini",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "eTa5CJ5mikRsAAb2",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        304,
+        240
+      ],
+      "id": "6fda6594-d8c2-4035-a7a2-379f79acf540",
+      "name": "Simple Memory"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Qdrant Vector Store": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Google Gemini": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Qdrant Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false,
+    "timeSavedMode": "fixed",
+    "errorWorkflow": "91yGXoYutFfSwy18",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "94b22986-8180-447c-bbc6-0e0cf5acb04f",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "9836c68541cd69e2fc9de7f6f3d6a347709b88cb77048e0165e8e7966373ed75"
+  },
+  "nodeGroups": [],
+  "id": "wzSFRxXAEgF5AvmW",
+  "tags": []
+}
